@@ -5,12 +5,13 @@ app = Flask(__name__)
 from io import BytesIO
 from flask_cors import CORS
 from dotenv import load_dotenv
-from utils import timestamp, get_next_product_no, send_sms_message
+from utils import timestamp, get_next_product_no, send_sms_message, register_webhook
 load_dotenv()
 
 host_url=os.getenv("host_url")
 
 CORS(app)
+register_webhook()
 
 @app.get("/")
 def home():
