@@ -35,7 +35,7 @@ def get_product_names():
 def upload_file(file_name, file):
     try:
         Files.insert_one({'filename': file_name, 'file': file.read()})
-        file_url = f"{host_url}/{file_name}"
+        file_url = f"{host_url}/files/{file_name}"
         return file_url
     except Exception as e:
         pass

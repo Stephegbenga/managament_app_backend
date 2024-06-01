@@ -1,3 +1,5 @@
 from models import Products
+from utils import timestamp
 
-Products.delete_many({})
+
+Products.update_one({}, {"$set": {"sold_date": timestamp(), "is_sold": True}})
