@@ -11,7 +11,7 @@ load_dotenv()
 host_url=os.getenv("host_url")
 
 CORS(app)
-register_webhook()
+# register_webhook()
 
 @app.get("/")
 def home():
@@ -53,6 +53,7 @@ def add_new_product():
 
         next_product_no = get_next_product_no()
         req['registration_date'] = timestamp()
+        
         for file in files:
             data = req.copy()
             filename = f'{next_product_no}.pdf'
@@ -102,13 +103,13 @@ def orders_create():
     req = request.json
     line_items = req['line_items']
     phone_no = req['customer']['phone']
-
+    sold_date = timestamp()
     if phone_no:
         for line_item in line_items:
             product_name = line_item['title']
             product = Products.find_one({"name": product_name})
             send_sms_message(phone_no, product['file_url'])
-            Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True}})
+            Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date}})
 
     return {"status":"success"}
 
