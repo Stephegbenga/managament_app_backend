@@ -28,8 +28,7 @@ def add_new_product_name():
 @app.get("/product_name")
 def get_product_names():
     product_names = list(Product_names.find({}, {'_id':0}))
-    all_product_names = [product_name['name'] for product_name in product_names]
-    return {"status":"success", "data": all_product_names}
+    return {"status":"success", "data": product_names}
 
 
 def upload_file(file_name, file):
@@ -94,6 +93,39 @@ def get_file(filename):
     file_data = BytesIO(file['file'])
     return send_file(file_data, download_name=filename, mimetype="application/pdf", as_attachment=True)
 
+
+
+
+
+# shopify webhook events
+@app.post('/orders-create')
+def orders_create():
+    req = request.json
+    print(req)
+    return {"status":"success"}
+
+
+@app.post('/orders-update')
+def orders_update():
+    req = request.json
+    print(req)
+    return {"status":"success"}
+
+
+@app.post('/products-create')
+def products_create():
+    req = request.json
+    print(req)
+    return {"status":"success"}
+
+
+@app.post('/products-update')
+def products_update():
+    req = request.json
+    name = req['title']
+    price = req['variants'][0]['price']
+    Product_names.update_one({"name": name}, {"$set": {"selling_price": price}})
+    return {"status":"success"}
 
 
 if __name__ == '__main__':
