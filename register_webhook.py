@@ -2,8 +2,7 @@ import requests
 import json
 
 # Shopify store credentials
-ACCESS_TOKEN = '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'
-STORE_URL = 'https://ca3c19-c0.myshopify.com'
+
 
 # Webhook details
 WEBHOOK_ADDRESS_BASE = 'https://c08d-102-88-69-197.ngrok-free.app'
