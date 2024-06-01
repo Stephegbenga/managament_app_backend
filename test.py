@@ -1,6 +1,3 @@
-from models import Product_names
+from models import Products
 
-from pprint import pprint
-product_names = list(Product_names.find({}, {"_id":0}))
-
-pprint(product_names)
+Products.delete_many({})

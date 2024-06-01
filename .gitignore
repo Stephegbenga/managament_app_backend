@@ -2,3 +2,5 @@
 venv
 register_webhook.py
 rt.py
+.idea
+__pycache__

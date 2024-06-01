@@ -5,7 +5,7 @@ app = Flask(__name__)
 from io import BytesIO
 from flask_cors import CORS
 from dotenv import load_dotenv
-from utils import timestamp, get_next_product_no
+from utils import timestamp, get_next_product_no, send_sms_message
 load_dotenv()
 
 host_url=os.getenv("host_url")
@@ -95,13 +95,20 @@ def get_file(filename):
 
 
 
-
-
 # shopify webhook events
 @app.post('/orders-create')
 def orders_create():
     req = request.json
-    print(req)
+    line_items = req['line_items']
+    phone_no = req['customer']['phone']
+
+    if phone_no:
+        for line_item in line_items:
+            product_name = line_item['title']
+            product = Products.find_one({"name": product_name})
+            send_sms_message(phone_no, product['file_url'])
+            Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True}})
+
     return {"status":"success"}
 
 
