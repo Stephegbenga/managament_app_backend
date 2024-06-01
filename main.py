@@ -1,4 +1,4 @@
-import os
+import os, json
 from flask import Flask, request, send_file
 from models import Files, Products, Product_names
 app = Flask(__name__)
@@ -31,14 +31,45 @@ def get_product_names():
     all_product_names = [product_name['name'] for product_name in product_names]
     return {"status":"success", "data": all_product_names}
 
+
+def upload_file(file_name, file):
+    try:
+        Files.insert_one({'filename': file_name, 'file': file.read()})
+        file_url = f"{host_url}/{file_name}"
+        return file_url
+    except Exception as e:
+        pass
+
+
 @app.post('/product')
 def add_new_product():
-    req = request.json
-    req['registration_date'] = timestamp()
-    req['product_no'] = get_next_product_no()
-    req['is_sold'] = False
-    Products.insert_one(req)
-    return {"status":"success", "message":"item added"}
+    try:
+        files = request.files.getlist('files')
+        req = request.form.get('data')
+
+        # Parse the JSON data
+        req = json.loads(req) if req else {}
+        all_products = []
+
+        next_product_no = get_next_product_no()
+        req['registration_date'] = timestamp()
+        for file in files:
+            data = req.copy()
+            filename = f'{next_product_no}.pdf'
+            file_url = upload_file(filename, file)
+            data['is_sold'] = False
+            data['product_no'] = next_product_no
+            data['file_url'] = file_url
+            next_product_no = get_next_product_no(next_product_no)
+            all_products.append(data)
+
+        Products.insert_many(all_products)
+        return {"status":"success", "message":"products uploaded"}
+    except Exception as e:
+        print(e)
+        return {"status":"error", "message":"Internal server error"}, 500
+
+
 
 @app.get('/product')
 def get_product():
@@ -53,17 +84,6 @@ def get_product():
     return response
 
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    try:
-        file_name = f"{get_next_product_no()}.pdf"
-        file = request.files['file']
-        Files.insert_one({'filename': file_name, 'file': file.read()})
-        file_url = f"{host_url}/{file_name}"
-        return {'status': 'success', 'url': file_url}
-    except Exception as e:
-        return {'status':'error', 'message':'internal server error'}, 500
-
 
 @app.route('/files/<filename>')
 def get_file(filename):
@@ -73,6 +93,7 @@ def get_file(filename):
 
     file_data = BytesIO(file['file'])
     return send_file(file_data, download_name=filename, mimetype="application/pdf", as_attachment=True)
+
 
 
 if __name__ == '__main__':

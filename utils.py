@@ -16,13 +16,16 @@ def next_number_formatted(number_str):
     return formatted_next_number
 
 
-def get_next_product_no():
+def get_next_product_no(number="auto"):
     # Find the product with the highest product_no
-    highest_product = Products.find_one(sort=[("product_no", -1)])
-    if highest_product:
-        next_product_no = next_number_formatted(highest_product['product_no'])
+    if number == "auto":
+        highest_product = Products.find_one(sort=[("product_no", -1)])
+        if highest_product:
+            next_product_no = next_number_formatted(highest_product['product_no'])
+        else:
+            next_product_no = "00001"
     else:
-        next_product_no = "00001"
+        next_product_no = next_number_formatted(number)
 
     return next_product_no
 
