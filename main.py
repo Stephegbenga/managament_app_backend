@@ -107,6 +107,7 @@ def get_file(filename):
 @app.post('/orders-create')
 def orders_create():
     req = request.json
+    print(req)
     line_items = req['line_items']
     phone_no = req['customer']['phone']
     sold_date = timestamp()
@@ -115,7 +116,7 @@ def orders_create():
             product_name = line_item['title']
             product = Products.find_one({"name": product_name})
             send_sms_message(phone_no, product['file_url'])
-            Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date}})
+            Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date, "selling_price": }})
 
     return {"status":"success"}
 
