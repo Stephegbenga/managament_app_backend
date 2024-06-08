@@ -114,9 +114,10 @@ def orders_create():
     if phone_no:
         for line_item in line_items:
             product_name = line_item['title']
+            selling_price = line_item['price']
             product = Products.find_one({"name": product_name})
             send_sms_message(phone_no, product['file_url'])
-            Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date, "selling_price": }})
+            Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date, "selling_price": selling_price}})
 
     return {"status":"success"}
 
