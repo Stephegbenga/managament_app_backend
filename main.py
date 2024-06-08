@@ -133,15 +133,19 @@ def orders_update():
 def products_create():
     req = request.json
     print(req)
+    name = req['title']
+    price = req['variants'][0]['price']
+    Product_names.update_one({"name": name}, {"$set": {"selling_price": price}}, upsert=True)
     return {"status":"success"}
 
 
 @app.post('/products-update')
 def products_update():
     req = request.json
+    print(req)
     name = req['title']
     price = req['variants'][0]['price']
-    Product_names.update_one({"name": name}, {"$set": {"selling_price": price}})
+    Product_names.update_one({"name": name}, {"$set": {"selling_price": price}}, upsert=True)
     return {"status":"success"}
 
 
