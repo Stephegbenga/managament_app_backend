@@ -1,7 +1,6 @@
 import os, json
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, render_template, send_from_directory,  redirect, Response
 from models import Files, Products, Product_names
-app = Flask(__name__)
 from io import BytesIO
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -9,13 +8,20 @@ from utils import timestamp, get_next_product_no, send_sms_message, register_web
 load_dotenv()
 
 host_url=os.getenv("host_url")
+app = Flask(__name__, static_folder='frontend/build')
 
 CORS(app)
 # register_webhook()
 
-@app.get("/")
-def home():
-    return {"status":"success", "message":"online"}
+# Serve React App
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+
 
 
 @app.post("/product_name")
