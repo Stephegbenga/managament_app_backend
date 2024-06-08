@@ -74,7 +74,7 @@ def add_new_product():
         return {"status":"success", "message":"products uploaded"}
     except Exception as e:
         print(e)
-        return {"status":"error", "message":"Internal server error"}, 500
+        return {"status":"error", "message":"Internal server errorc e"}, 500
 
 
 
