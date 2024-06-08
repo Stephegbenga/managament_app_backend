@@ -118,6 +118,7 @@ def orders_create():
             product = Products.find_one({"name": product_name})
             send_sms_message(phone_no, product['file_url'])
             Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date, "selling_price": selling_price}})
+            Product_names.update_one({"name": product_name}, {"$set": {"selling_price": selling_price}}, upsert=True)
 
     return {"status":"success"}
 
