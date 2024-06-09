@@ -111,14 +111,18 @@ def orders_create():
     line_items = req['line_items']
     phone_no = req['customer']['phone']
     sold_date = timestamp()
+
     if phone_no:
         for line_item in line_items:
-            product_name = line_item['title']
-            selling_price = line_item['price']
-            product = Products.find_one({"name": product_name, "is_sold": False})
-            send_sms_message(phone_no, product['file_url'])
-            Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date, "selling_price": selling_price}})
-            Product_names.update_one({"name": product_name}, {"$set": {"selling_price": selling_price}}, upsert=True)
+            quantity = line_item['quantity']
+
+            for _ in range(quantity):
+                product_name = line_item['title']
+                selling_price = line_item['price']
+                product = Products.find_one({"name": product_name, "is_sold": False})
+                send_sms_message(phone_no, product['file_url'])
+                Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date, "selling_price": selling_price}})
+                Product_names.update_one({"name": product_name}, {"$set": {"selling_price": selling_price}}, upsert=True)
 
     return {"status":"success"}
 
