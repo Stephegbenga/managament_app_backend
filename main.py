@@ -95,13 +95,13 @@ def get_product():
 @app.delete('/product/<product_name>')
 def delete_product(product_name):
     Product_names.delete_one({"name": product_name})
-    affected_products = Products.find({"name": product_name})
+    affected_products = Products.find({"name": product_name, "is_sold": False})
     for product in affected_products:
         file_url = product['file_url']
         file_name = file_url.split("/")[-1]
         Files.delete_one({"filename": file_name})
 
-    Products.delete_many({"name": product_name})
+    Products.delete_many({"name": product_name, "is_sold": False})
     return {'status':'success', 'message':'deleted'}
 
 
