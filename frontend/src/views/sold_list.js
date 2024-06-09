@@ -49,23 +49,17 @@ const SoldList = () => {
       .filter(product => product.name === selectedProduct)
       .filter(product => {
         try {
-          console.log(product.sold_date)
+          console.log(product.sold_date);
           const soldDate = parseISO(product.sold_date);
           return isWithinInterval(soldDate, { start: startDate, end: endDate });
         } catch (error) {
           console.error(`Error parsing sold date: ${error}`);
           return false;
         }
-      })
-      .map(product => {
-        const productNameObj = product_names.find(pn => pn.name === product.name);
-        return {
-          ...product,
-          selling_price: productNameObj ? productNameObj.selling_price : ""
-        };
       });
+  
     setFiltered_products(filteredProducts);
-  }, [selectedProduct, products, product_names, startDate, endDate]);
+  }, [selectedProduct, products, startDate, endDate]);
 
   const calculateTotals = () => {
     const totalPurchasePrice = filtered_products.reduce((total, product) => total + Number(product.purchase_price), 0);
