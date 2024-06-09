@@ -255,6 +255,11 @@ const Register = () => {
   };
 
   const handleDeleteProduct = async (productName) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete the selected trigger?");
+    if (!confirmDelete) {
+      return;
+    }
+    
     const response = await delete_product(productName);
     if (response) {
       toast.success(response.message);
