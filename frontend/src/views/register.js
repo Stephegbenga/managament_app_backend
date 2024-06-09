@@ -259,12 +259,14 @@ const Register = () => {
     if (!confirmDelete) {
       return;
     }
-    
+    setLoading(true)
+
     const response = await delete_product(productName);
     if (response) {
       toast.success(response.message);
       setProducts(products.filter(product => product.name !== productName));
     }
+    setLoading(false)
   };
 
   return (
