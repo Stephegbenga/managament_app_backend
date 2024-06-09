@@ -297,7 +297,7 @@ const Register = () => {
 
 
         <button
-          onClick={() => onDelete(product.name)}
+          onClick={() => handleDeleteProduct(product.name)}
           style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
           Delete
         </button>
