@@ -9,6 +9,7 @@ import { convertTimestampToDate } from "../util";
 import './sold_list.css';
 
 const SoldList = () => {
+  
   const [products, setProducts] = useState([]);
   const [product_names, setProduct_names] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');

@@ -92,6 +92,21 @@ def get_product():
 
 
 
+@app.delete('/product/<product_name>')
+def delete_product(product_name):
+    Product_names.delete_one({"name": product_name})
+    affected_products = Products.find({"name": product_name})
+    for product in affected_products:
+        file_url = product['file_url']
+        file_name = file_url.split("/")[-1]
+        Files.delete_one({"filename": file_name})
+
+    Products.delete_many({"name": product_name})
+    return {'status':'success', 'message':'deleted'}
+
+
+
+
 @app.route('/files/<filename>')
 def get_file(filename):
     file = Files.find_one({'filename': filename})
@@ -115,14 +130,14 @@ def orders_create():
     if phone_no:
         for line_item in line_items:
             quantity = line_item['quantity']
+            selling_price = line_item['price']
+            product_name = line_item['title']
 
             for _ in range(quantity):
-                product_name = line_item['title']
-                selling_price = line_item['price']
                 product = Products.find_one({"name": product_name, "is_sold": False})
                 send_sms_message(phone_no, product['file_url'])
                 Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date, "selling_price": selling_price}})
-                Product_names.update_one({"name": product_name}, {"$set": {"selling_price": selling_price}}, upsert=True)
+            Product_names.update_one({"name": product_name}, {"$set": {"selling_price": selling_price}}, upsert=True)
 
     return {"status":"success"}
 
