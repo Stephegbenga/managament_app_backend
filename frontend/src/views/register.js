@@ -153,6 +153,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [newProduct, setNewProduct] = useState('');
   const [files, setFiles] = useState([]);
+  const [loading_message, setLoading_message] = useState("Uploading new products")
 
   useEffect(() => {
     async function load_product_names() {
@@ -238,6 +239,7 @@ const Register = () => {
   };
 
   const handleAddProduct = async () => {
+    setLoading_message("Uploading new products")
     if (selectedProduct && purchasePrice && files.length !== 0) {
       let new_product = { name: selectedProduct, purchase_price: purchasePrice };
       setLoading(true);
@@ -254,7 +256,9 @@ const Register = () => {
     }
   };
 
+
   const handleDeleteProduct = async (productName) => {
+    setLoading_message("Deleting Products")
     const confirmDelete = window.confirm("Are you sure you want to delete " + productName);
     if (!confirmDelete) {
       return;
@@ -332,7 +336,7 @@ const Register = () => {
         />
       </div>
       <button className="add-product-btn" onClick={handleAddProduct}>Add Product</button>
-      <Loading isVisible={loading} message="Uploading new products" />
+      <Loading isVisible={loading} message={loading_message} />
     </div>
   );
 };
