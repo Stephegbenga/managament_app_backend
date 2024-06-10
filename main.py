@@ -92,8 +92,10 @@ def get_product():
 
 
 
-@app.delete('/product/<product_name>')
-def delete_product(product_name):
+@app.delete('/product')
+def delete_product():
+    req = request.json
+    product_name = req['name']
     Product_names.delete_one({"name": product_name})
     affected_products = Products.find({"name": product_name, "is_sold": False})
     for product in affected_products:

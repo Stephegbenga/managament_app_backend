@@ -196,8 +196,12 @@ const Register = () => {
 
   const delete_product = async (productName) => {
     try {
-      const response = await fetch(base_url + `/product/${productName}`, {
+      const response = await fetch(base_url + `/product}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({name: productName}),
       });
 
       if (!response.ok) {
