@@ -138,7 +138,7 @@ def orders_create():
             for _ in range(quantity):
                 product = Products.find_one({"name": product_name, "is_sold": False})
                 if product:
-                    send_sms_message(phone_no, f"商品リンク {product['file_url']})
+                    send_sms_message(phone_no, f"商品リンク {product['file_url']}")
                     Products.update_one({"_id": product['_id']}, {"$set": {"is_sold": True, "sold_date": sold_date, "selling_price": selling_price}})
                     Product_names.update_one({"name": product_name}, {"$set": {"selling_price": selling_price}}, upsert=True)
 
