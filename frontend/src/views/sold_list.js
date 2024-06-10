@@ -23,16 +23,36 @@ const SoldList = () => {
     setSelectedProduct(event.target.value);
   };
 
-  useEffect(() => {
-    async function load_product_names() {
-      let response = await get_product_names();
-      if (response) {
-        setProduct_names(response.data);
-      }
-    }
+  // useEffect(() => {
+  //   const soldProductNames = products.map(product => product.name);
+  //   const uniqueSoldProductNames = [...new Set(soldProductNames)];
 
-    load_product_names();
-  }, []);
+  //   const uniqueProductObjects = uniqueSoldProductNames.map(name => ({ name }));
+
+  //   setProduct_names(uniqueProductObjects);
+  // }, [products]);
+
+
+  useEffect(() => {
+    const fetchProductNames = async () => {
+      try {
+        let response = await get_product_names();
+        if (response && response.data) {
+          // Combine product names from API response and products array
+          const apiProductNames = response.data.map(product => product.name);
+          const soldProductNames = products.map(product => product.name);
+          const combinedProductNames = [...new Set([...apiProductNames, ...soldProductNames])];
+  
+          const uniqueProductObjects = combinedProductNames.map(name => ({ name }));
+          setProduct_names(uniqueProductObjects);
+        }
+      } catch (error) {
+        console.error("Error fetching product names:", error);
+      }
+    };
+  
+    fetchProductNames();
+  }, [products]);
 
   useEffect(() => {
     async function load_products() {
